@@ -14,6 +14,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Symfony\Component\Security\Core\User\User;
 
 class AdvertController extends Controller
 {
@@ -91,7 +92,7 @@ class AdvertController extends Controller
     $form = $this->createForm(new AdvertType(), $advert);
 
     if ($form->handleRequest($request)->isValid()) {
-      $user = new User; // Bien sûr il faudrait plutôt implémenter $advert->getUser() !
+      $user = new User('username', 'password'); // Bien sûr il faudrait plutôt implémenter $advert->getUser() !
 
       // On crée l'évènement avec ses 2 arguments
       $event = new MessagePostEvent($advert->getContent(), $user);
