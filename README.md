@@ -17,7 +17,21 @@ Avec Composer bien évidemment :
 
     php composer.phar install
 
-## 4. Publiez les assets
+## 4. Créez la base de données
+Si la base de données que vous avez renseignée dans l'étape 2 n'existe pas déjà, créez-la :
+
+    php app/console doctrine:database:create
+
+Puis créez les tables correspondantes au schéma Doctrine :
+
+    php app/console doctrine:schema:update --dump-sql
+    php app/console doctrine:schema:update --force
+
+Enfin, éventuellement, ajoutez les fixtures :
+
+    php app/console doctrine:fixtures:load
+
+## 5. Publiez les assets
 Publiez les assets dans le répertoire web :
 
     php app/console assets:install web
