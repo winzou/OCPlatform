@@ -12,7 +12,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
@@ -55,20 +54,10 @@ class AdvertController extends Controller
     ));
   }
 
-  public function viewAction(Advert $advert, $id)
+  public function viewAction(Advert $advert)
   {
     $em = $this->getDoctrine()->getManager();
-/*
-    // On récupère l'annonce $id
-    $advert = $em
-      ->getRepository('OCPlatformBundle:Advert')
-      ->find($id)
-    ;
 
-    if (null === $advert) {
-      throw new NotFoundHttpException("L'annonce d'id ".$id." n'existe pas.");
-    }
-*/
     // On récupère la liste des candidatures de cette annonce
     $listApplications = $em
       ->getRepository('OCPlatformBundle:Application')
@@ -88,6 +77,11 @@ class AdvertController extends Controller
     ));
   }
 
+  public function viewSlugAction(Advert $advert)
+  {
+    return $this->viewAction($advert);
+  }
+
   /**
    * @Security("has_role('ROLE_USER')")
    */
@@ -97,9 +91,10 @@ class AdvertController extends Controller
     $form = $this->createForm(new AdvertType(), $advert);
 
     if ($form->handleRequest($request)->isValid()) {
-      /*
+      $user = new User; // Bien sûr il faudrait plutôt implémenter $advert->getUser() !
+
       // On crée l'évènement avec ses 2 arguments
-      $event = new MessagePostEvent($advert->getContent(), $advert->getUser());
+      $event = new MessagePostEvent($advert->getContent(), $user);
 
       // On déclenche l'évènement
       $this
@@ -109,7 +104,6 @@ class AdvertController extends Controller
 
       // On récupère ce qui a été modifié par le ou les listeners, ici le message
       $advert->setContenu($event->getMessage());
-      */
 
       $em = $this->getDoctrine()->getManager();
       $em->persist($advert);
@@ -213,7 +207,7 @@ class AdvertController extends Controller
   /**
    * @ParamConverter("json")
    */
-  public function ParamConverterAction($json)
+  public function paramConverterAction($json)
   {
     return new Response(print_r($json, true));
   }

@@ -16,7 +16,7 @@ oc_platform_translation:
 
 oc_platform_paramconverter:
     path: /test/{json}
-    defaults: { _controller: "OCPlatformBundle:Advert:ParamConverter" }
+    defaults: { _controller: "OCPlatformBundle:Advert:paramConverter" }
 
 _console:
     resource: "@CoreSphereConsoleBundle/Resources/config/routing.yml"

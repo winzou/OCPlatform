@@ -4,6 +4,7 @@
 namespace OC\PlatformBundle\Bigbrother;
 
 use Symfony\Component\EventDispatcher\Event;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 class MessagePostEvent extends Event
 {
