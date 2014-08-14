@@ -1,0 +1,38 @@
+# src/OC/PlatformBundle/Resources/config/services.yml
+
+services:
+    oc_platform.antispam:
+        class:     OC\PlatformBundle\Antispam\OCAntispam
+        arguments: [@mailer, 50, %locale%]
+        tags:
+            -  { name: twig.extension }
+
+    oc_platform.validator.antiflood:                              # Le nom du service
+        class: OC\PlatformBundle\Validator\AntifloodValidator     # La classe du service, ici notre validateur déjà créé
+        arguments: [@request_stack, @doctrine.orm.entity_manager] # Les données qu'on injecte au service : la requête et l'EntityManager
+        tags:
+            - { name: validator.constraint_validator, alias: oc_platform_antiflood }  # C'est avec l'alias qu'on retrouvera le service
+
+    oc_platform.beta.html:
+        class: OC\PlatformBundle\Beta\BetaHTML
+
+    oc_platform.beta.listener:
+        class: OC\PlatformBundle\Beta\BetaListener
+        arguments: [@oc_platform.beta.html, "2013-10-20"]
+        tags:
+            - { name: kernel.event_listener, event: kernel.response, method: processBeta }
+
+    oc_platform.bigbrother.censorship_processor:
+        class:     OC\PlatformBundle\Bigbrother\CensorshipProcessor
+        arguments: [@mailer]
+
+    oc_platform.bigbrother.censorship_listener:
+        class:     OC\PlatformBundle\Bigbrother\CensorshipListener
+        arguments: [@oc_platform.bigbrother.censorship_processor, [1, 2, 3]]
+        tags:
+            - { name: kernel.event_listener, event: oc_platform.bigbrother.post_message, method: processMessage }
+
+    oc_platform.json_paramconverter:
+        class: OC\PlatformBundle\ParamConverter\JsonParamConverter
+        tags:
+            - { name: request.param_converter }

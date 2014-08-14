@@ -1,0 +1,3 @@
+oc_user_homepage:
+    path:     /hello/{name}
+    defaults: { _controller: OCUserBundle:Default:index }
